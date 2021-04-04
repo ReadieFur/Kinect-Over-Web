@@ -361,10 +361,3 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
-
-# pnpm
-**/pnpm-lock.yaml
-
-# custom
-src/www/build/
-src/www/dist/
