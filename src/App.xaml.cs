@@ -33,7 +33,7 @@ namespace KinectOverNDI
             mainWindow.Show();
         }
 
-        private void KinectManager_CreatedColourFrame(System.Windows.Media.ImageSource _image)
+        private void KinectManager_CreatedColourFrame(System.Windows.Media.Imaging.BitmapSource _image)
         {
             mainWindow.ColourImage.Source = _image;
         }

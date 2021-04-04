@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using Microsoft.Kinect;
 
 namespace KinectOverNDI.Kinect
 {
     class KinectManager
     {
-        public event Action<ImageSource> CreatedColourFrame;
+        //public event Action<ImageSource> CreatedColourFrame;
+        public event Action<BitmapSource> CreatedColourFrame;
 
         public FrameSources frameSources;
 
