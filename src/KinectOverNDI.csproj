@@ -99,5 +99,13 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="libs\NDILibDotNet2.dll" />
+    <Content Include="libs\Processing.NDI.Lib.x86.dll" />
+    <Resource Include="libs\README.txt" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>xcopy /Y "$(ProjectDir)libs\*.dll" "$(SolutionDir)\$(OutDir)"</PostBuildEvent>
+  </PropertyGroup>
 </Project>
