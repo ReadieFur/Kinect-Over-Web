@@ -1,19 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using Microsoft.Kinect;
 
 namespace KinectOverNDI.Kinect
 {
     class KinectManager
     {
-        //public event Action<ImageSource> CreatedColourFrame;
-        public event Action<BitmapSource> CreatedColourFrame;
+        public event Action<ColorFrame> GotColourFrame;
+        public event Action<IList<Body>> GotBodies;
 
         public FrameSources frameSources;
+        public KinectSensor kinect;
 
-        private KinectSensor kinect;
         private MultiSourceFrameReader reader;
         private IList<Body> bodies;
 
@@ -29,49 +27,30 @@ namespace KinectOverNDI.Kinect
             kinect.Open();
         }
 
-        private void Reader_MultiSourceFrameArrived(object sender, MultiSourceFrameArrivedEventArgs e)
+        private void Reader_MultiSourceFrameArrived(object _sender, MultiSourceFrameArrivedEventArgs _multiSourceFrame)
         {
-            var frame = e.FrameReference.AcquireFrame();
+            var frame = _multiSourceFrame.FrameReference.AcquireFrame();
 
-            if (frameSources.IsSourceEnabled(FrameSourceTypes.Color))
+            if (frameSources.IsSourceEnabled(FrameSources.SourceTypes.Color))
             {
                 using (ColorFrame colourFrame = frame.ColorFrameReference.AcquireFrame())
                 {
-                    if (colourFrame != null)
+                    if (colourFrame != null && GotColourFrame != null)
                     {
-                        CreatedColourFrame(colourFrame.ToBitmap());
+                        GotColourFrame(colourFrame);
                     }
                 }
             }
 
-            if (frameSources.IsSourceEnabled(FrameSourceTypes.Body))
+            if (frameSources.IsSourceEnabled(FrameSources.SourceTypes.BodyColour))
             {
                 using (BodyFrame bodyFrame = frame.BodyFrameReference.AcquireFrame())
                 {
-                    if (bodyFrame != null)
+                    if (bodyFrame != null && GotBodies != null)
                     {
                         bodies = new Body[bodyFrame.BodyFrameSource.BodyCount];
-
                         bodyFrame.GetAndRefreshBodyData(bodies);
-
-                        foreach (var body in bodies)
-                        {
-                            if (body.IsTracked)
-                            {
-                                foreach (Joint joint in body.Joints.Values)
-                                {
-                                    if (joint.TrackingState == TrackingState.Tracked || joint.TrackingState == TrackingState.Inferred)
-                                    {
-                                        if (frameSources.IsSourceEnabled(FrameSourceTypes.Color))
-                                        {
-                                            ColorSpacePoint colourSpacePoint = kinect.CoordinateMapper.MapCameraPointToColorSpace(joint.Position);
-                                            double x = float.IsInfinity(colourSpacePoint.X) ? 0 : colourSpacePoint.X;
-                                            double y = float.IsInfinity(colourSpacePoint.Y) ? 0 : colourSpacePoint.Y;
-                                        }
-                                    }
-                                }
-                            }
-                        }
+                        GotBodies(bodies);
                     }
                 }
             }

@@ -1,6 +1,4 @@
-﻿using Microsoft.Kinect;
-
-namespace KinectOverNDI.Kinect
+﻿namespace KinectOverNDI.Kinect
 {
     public class FrameSources
     {
@@ -20,73 +18,92 @@ namespace KinectOverNDI.Kinect
         //private bool LongExposureInfrared = false;
         //private bool Depth = false;
         //private bool BodyIndex = false;
-        public bool Body { get; private set; } = false;
-        //public bool Audio { get; private set; } = false;
+        //private bool Body = false;
+        private bool BodyColour = false;
+        //private bool Audio = false;
 
-        public void AddSource(FrameSourceTypes _source)
+        public void AddSource(SourceTypes _source)
         {
             ChangeSource(_source, true);
         }
 
-        public void RemoveSource(FrameSourceTypes _source)
+        public void RemoveSource(SourceTypes _source)
         {
             ChangeSource(_source, false);
         }
 
-        public bool IsSourceEnabled(FrameSourceTypes _source)
+        public bool IsSourceEnabled(SourceTypes _source)
         {
             switch (_source)
             {
-                /*case FrameSourceTypes.None:
+                /*case SourceTypes.None:
                     return None;*/
-                case FrameSourceTypes.Color:
+                case SourceTypes.Color:
                     return Colour;
-                /*case FrameSourceTypes.Infrared:
+                /*case SourceTypes.Infrared:
                     return Infrared;*/
-                /*case FrameSourceTypes.LongExposureInfrared:
+                /*case SourceTypes.LongExposureInfrared:
                     return LongExposureInfrared;
-                /*case FrameSourceTypes.Depth:
+                /*case SourceTypes.Depth:
                     return Depth;*/
-                /*case FrameSourceTypes.BodyIndex:
+                /*case SourceTypes.BodyIndex:
                     return BodyIndex;*/
-                case FrameSourceTypes.Body:
-                    return Body;
-                /*case FrameSourceTypes.Audio:
+                /*case SourceTypes.Body:
+                    return Body;*/
+                case SourceTypes.BodyColour:
+                    return BodyColour;
+                /*case SourceTypes.Audio:
                     return Audio;*/
                 default:
                     return false;
             }
         }
 
-        private void ChangeSource(FrameSourceTypes _source, bool _enabled)
+        private void ChangeSource(SourceTypes _source, bool _enabled)
         {
             switch (_source)
             {
-                /*case FrameSourceTypes.None:
+                /*case FrameSources.None:
                     None = _enabled;
                     break;*/
-                case FrameSourceTypes.Color:
+                case SourceTypes.Color:
                     Colour = _enabled;
                     break;
-                /*case FrameSourceTypes.Infrared:
+                /*case SourceTypes.Infrared:
                     Infrared = _enabled;
                     break;*/
-                /*case FrameSourceTypes.LongExposureInfrared:
+                /*case SourceTypes.LongExposureInfrared:
                     LongExposureInfrared = _enabled;
                     break;*/
-                /*case FrameSourceTypes.Depth:
+                /*case SourceTypes.Depth:
                     Depth = _enabled;
                     break;*/
-                /*case FrameSourceTypes.BodyIndex:
+                /*case SourceTypes.BodyIndex:
                     BodyIndex = _enabled;
                     break;*/
-                case FrameSourceTypes.Body:
+                /*case SourceTypes.Body:
                     Body = _enabled;
+                    break;*/
+                case SourceTypes.BodyColour:
+                    BodyColour = _enabled;
                     break;
-                /*case FrameSourceTypes.Audio:
+                /*case SourceTypes.Audio:
                     Audio = _enabled;
                     break;*/
             }
+        }
+
+        public enum SourceTypes
+        {
+            //None = 0,
+            Color = 1,
+            //Infrared = 2,
+            //LongExposureInfrared = 3,
+            //Depth = 4,
+            //BodyIndex = 5,
+            //Body = 6,
+            BodyColour = 7,
+            //Audio = 8
         }
     }
 }
