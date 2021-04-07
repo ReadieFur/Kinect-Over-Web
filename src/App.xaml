@@ -1,7 +1,7 @@
-﻿<Application x:Class="KinectOverNDI.App"
+﻿<Application x:Class="KinectOverWeb.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:KinectOverNDI"
+             xmlns:local="clr-namespace:KinectOverWeb"
              Startup="Application_Startup">
     <Application.Resources>
          

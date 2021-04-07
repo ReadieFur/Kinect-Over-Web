@@ -5,12 +5,12 @@ using Imaging = System.Windows.Media.Imaging;
 using Drawing = System.Drawing;
 using Microsoft.Kinect;
 
-namespace KinectOverNDI.Kinect
+namespace KinectOverWeb.Kinect
 {
     /* I could make this non-static and then create an instance for each kinect if I decide do add support for multiple devices in the future.
      * The downside of this is that I would not be able to create extention functions (this type name).
      */
-    static class KinectHelper
+    public static class KinectHelper
     {
         public static readonly Media.PixelFormat format = Media.PixelFormats.Bgr32;
         public static readonly double dpi = 96.0;
@@ -51,7 +51,7 @@ namespace KinectOverNDI.Kinect
             bitmap.Unlock();
             return bitmap;
         }
-        
+
         public static void ColourBodyFrameDrawLine(this Drawing.Graphics _graphics, KinectSensor _kinect, Joint _joint1, Joint _joint2)
         {
             if (_joint1.TrackingState == TrackingState.NotTracked || _joint2.TrackingState == TrackingState.NotTracked) { return; }

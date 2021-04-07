@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Reflection;
 
-namespace KinectOverNDI
+namespace KinectOverWeb
 {
     internal static class Logger
     {

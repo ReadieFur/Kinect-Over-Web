@@ -1,15 +1,14 @@
 ﻿using System;
 using Microsoft.Kinect;
-using KinectOverNDI.Kinect;
-using KinectOverNDI.NDI;
+using KinectOverWeb.Kinect;
+using KinectOverWeb.NDI;
 
-namespace KinectOverNDI
+namespace KinectOverWeb
 {
     internal class Startup
     {
         private KinectManager kinectManager;
         private NDIManager streamManager;
-        private MainWindow mainWindow;
 
         private NDIStream bodyColourStream;
 
@@ -32,9 +31,6 @@ namespace KinectOverNDI
             kinectManager.GotBodies += KinectManager_GotBodies;
 
             bodyColourStream.StartStream();
-
-            /*mainWindow = new MainWindow();
-            mainWindow.Show();*/
         }
 
         private void KinectManager_GotBodies(System.Collections.Generic.IList<Body> _bodies)

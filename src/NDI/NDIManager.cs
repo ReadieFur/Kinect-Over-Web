@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 
-namespace KinectOverNDI.NDI
+namespace KinectOverWeb.NDI
 {
-    class NDIManager
+    public class NDIManager
     {
         private Dictionary<string, NDIStream> streams;
 

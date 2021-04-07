@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using Microsoft.Kinect;
 
-namespace KinectOverNDI.Kinect
+namespace KinectOverWeb.Kinect
 {
-    class KinectManager
+    public class KinectManager
     {
         public event Action<ColorFrame> GotColourFrame;
         public event Action<IList<Body>> GotBodies;

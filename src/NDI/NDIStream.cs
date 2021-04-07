@@ -4,9 +4,9 @@ using System.Drawing.Imaging;
 using System.Threading.Tasks;
 using NewTek.NDI;
 
-namespace KinectOverNDI.NDI
+namespace KinectOverWeb.NDI
 {
-    class NDIStream : IDisposable
+    public class NDIStream : IDisposable
     {
         private readonly string name;
         private readonly int width;

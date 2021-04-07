@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace KinectOverNDI
+namespace KinectOverWeb
 {
     public partial class App : Application
     {

@@ -1,4 +1,4 @@
-﻿namespace KinectOverNDI.Kinect
+﻿namespace KinectOverWeb.Kinect
 {
     public class FrameSources
     {
@@ -87,9 +87,9 @@
                 case SourceTypes.BodyColour:
                     BodyColour = _enabled;
                     break;
-                /*case SourceTypes.Audio:
-                    Audio = _enabled;
-                    break;*/
+                    /*case SourceTypes.Audio:
+                        Audio = _enabled;
+                        break;*/
             }
         }
 

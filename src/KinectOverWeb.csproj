@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{7D80D875-A132-498A-8E9B-3A98D1FF7E34}</ProjectGuid>
+    <ProjectGuid>{72891C2B-7868-4B00-9F86-5C53BC58ACE1}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>KinectOverNDI</RootNamespace>
-    <AssemblyName>KinectOverNDI</AssemblyName>
+    <RootNamespace>KinectOverWeb</RootNamespace>
+    <AssemblyName>KinectOverWeb</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -38,7 +38,7 @@
     <Reference Include="Microsoft.Kinect, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="NDILibDotNet2, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>libs\NDILibDotNet2.dll</HintPath>
+      <HintPath>..\..\..\..\..\Google Drive Exclude\TMP\Move\NDI\libs\NDILibDotNet2.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
@@ -62,27 +62,19 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Kinect\FrameSources.cs" />
+    <Compile Include="Kinect\KinectHelper.cs" />
+    <Compile Include="Kinect\KinectManager.cs" />
+    <Compile Include="NDI\NDIManager.cs" />
+    <Compile Include="NDI\NDIStream.cs" />
     <Compile Include="Startup.cs" />
-    <Page Include="MainWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Kinect\FrameSources.cs" />
-    <Compile Include="Kinect\KinectHelper.cs" />
-    <Compile Include="Kinect\KinectManager.cs" />
     <Compile Include="Logger.cs" />
-    <Compile Include="MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="NDI\NDIManager.cs" />
-    <Compile Include="NDI\NDIStream.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -113,8 +105,10 @@
     <Content Include="libs\NDILibDotNet2.dll" />
     <Content Include="libs\Processing.NDI.Lib.x86.dll" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Web\" />
+    <Folder Include="WPF\" />
+    <Folder Include="www\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>xcopy /Y "$(ProjectDir)libs\*.dll" "$(SolutionDir)\$(OutDir)"</PostBuildEvent>
-  </PropertyGroup>
 </Project>
