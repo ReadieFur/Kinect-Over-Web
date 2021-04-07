@@ -7,7 +7,7 @@
 			"group": "build",
 			"problemMatcher": [],
 			"label": "VS: Debug",
-			"detail": "tsc && node ./build.js --Debug"
+			"detail": "tsc && node ./build.jsx --Debug"
 		},
 		{
 			"type": "npm",
@@ -15,7 +15,7 @@
 			"group": "build",
 			"problemMatcher": [],
 			"label": "VS: Release",
-			"detail": "tsc && node ./build.js --Release"
+			"detail": "tsc && node ./build.jsx --Release"
 		},
 		{
 			"type": "npm",
@@ -23,7 +23,7 @@
 			"group": "build",
 			"problemMatcher": [],
 			"label": "VSC: Publish",
-			"detail": "tsc && node ./build.js --Publish"
+			"detail": "tsc && node ./build.jsx --Publish"
 		},
 		{
 			"type": "npm",
@@ -31,7 +31,7 @@
 			"group": "build",
 			"problemMatcher": [],
 			"label": "VSC: Build",
-			"detail": "tsc && node ./build.js --Build"
+			"detail": "tsc && node ./build.jsx --Build"
 		}
 	]
 }
