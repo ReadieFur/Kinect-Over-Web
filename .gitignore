@@ -362,4 +362,9 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 
+# Custom
 src/libs/*.dll
+src/www/pnpm-lock.yaml
+src/www/**/*.js
+src/www/**/*.css
+src/www/**/*.map

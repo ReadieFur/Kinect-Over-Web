@@ -111,4 +111,9 @@
     <Folder Include="www\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>xcopy /Y "$(ProjectDir)libs\*.dll" "$(SolutionDir)\$(OutDir)"
+echo cd "$(SolutionDir)www\"
+echo npm run $(ConfigurationName)</PostBuildEvent>
+  </PropertyGroup>
 </Project>
