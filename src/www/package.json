@@ -1,9 +1,9 @@
 {
 	"scripts": {
-		"Debug": "tsc && node ./build.js --Debug",
-		"Release": "tsc && node ./build.js --Release",
-		"publish": "tsc && node ./build.js --Publish",
-		"build": "tsc && node ./build.js --Build"
+		"Debug": "tsc && node ./build.jsx --Debug",
+		"Release": "tsc && node ./build.jsx --Release",
+		"publish": "tsc && node ./build.jsx --Publish",
+		"build": "tsc && node ./build.jsx --Build"
 	},
 	"dependencies": {
 		"directory-tree": "^2.2.7",
