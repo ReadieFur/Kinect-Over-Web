@@ -27,13 +27,13 @@ interface IFrameSourceTypeDescriptor
     height: number
 }
 
-type KeyValuePair = {[key: string]: any}
-
 class ViewSource
 {
     private canvas!: HTMLCanvasElement;
     private canvas2D!: CanvasRenderingContext2D;
     private canvasWebGL!: WebGLRenderingContext;
+    private uColour!: WebGLUniformLocation;
+    private aVertexPosition!: number;
     private source!: string;
     private websocketClient!: WebsocketClient;
     private endpoint!: IWebsocketEndpoint;
@@ -95,11 +95,11 @@ class ViewSource
     }
 
     //#region Canvas2D
-    /*private OnMessage(ev: object): void
+    /*private OnMessage(_ev: object): void
     {
         if ((<IFrameSourceTypeDescriptor>(<KeyValuePair>FrameSourceTypes)[this.source]).type == "Point")
         {
-            var bodies: Joints[] = ev as Joints[];
+            var bodies: Joints[] = _ev as Joints[];
             this.canvas2D.clearRect(0, 0, this.canvas.width, this.canvas.height);
             bodies.forEach(body =>
             {
@@ -187,7 +187,8 @@ class ViewSource
     //#endregion
 
     //#region CanvasWebGL
-    //This was me 'first' time using WebGL, so there will be lots of comments.
+    //This was my 'first' time using WebGL, so there will be lots of comments.
+    //I am attempting WebGL here in hopes that it prforms better when using the GPU to render the image.
     //I had tested most of this in another folder which I made these comments in,
     //but I don't want to upload that as its own GitHub repo so for my first public WebGL set of code I will be leaving my comments in here (some comments have been stripped).
     //The tutorial I followed for this basic WebGL setup can be found here: https://www.creativebloq.com/javascript/get-started-webgl-draw-square-7112981
@@ -246,14 +247,12 @@ class ViewSource
         this.canvasWebGL.useProgram(program);
 
         //Get the 'uColor' variable location from the shader.
-        var uColor: WebGLUniformLocation = Main.ThrowIfNullOrUndefined(this.canvasWebGL.getUniformLocation(program, "uColor"));
-        //Set the 'uColor' variable value with 'uniform4fv' as the variable type is 'vec4'.
-        this.canvasWebGL.uniform4fv(uColor, [0.5, 0.0, 0.0, 1.0]);
+        this.uColour = Main.ThrowIfNullOrUndefined(this.canvasWebGL.getUniformLocation(program, "uColor"));
 
         //Get the 'aVertexPosition' variable from the shader.
-        var aVertexPosition: number = this.canvasWebGL.getAttribLocation(program, "aVertexPosition");
+        this.aVertexPosition = this.canvasWebGL.getAttribLocation(program, "aVertexPosition");
         //Enable the static variable. (Didn't quite understand this step).
-        this.canvasWebGL.enableVertexAttribArray(aVertexPosition);
+        this.canvasWebGL.enableVertexAttribArray(this.aVertexPosition);
 
         //Coordinate -1,-1 is the top left of the canvas.
         //Coordinate 0,0 is the center of the canvas.
@@ -261,10 +260,83 @@ class ViewSource
         //In WebGL there are three main drawing types: points, lines and triangles.
     }
 
-    private OnMessage(ev: object): void
+    private JoinJointsWebGL(_joint1: Joint, _joint2: Joint): void
     {
+        
+    }
 
+    //WebGL circle using triangles: https://github.com/davidwparker/programmingtil-webgl/tree/master/0027-drawing-a-circle
+    private MarkJointWebGL(_joint: Joint): void
+    {
+        if (
+            _joint.TrackingState == TrackingState.NotTracked ||
+            typeof(_joint.Position.X) !== "string" ||
+            typeof(_joint.Position.Y) !== "string" ||
+            typeof(_joint.Position.Z) !== "string"
+        )
+        { return; }
+
+        var x = parseInt(_joint.Position.X);
+        var y = parseInt(_joint.Position.Y);
+        if (isNaN(x) || isNaN(y)) { return; }
+
+        var aspectRatio = this.canvas.width / this.canvas.height;
+        var scale = 30 / ((aspectRatio >= 1 ? this.canvas.width : this.canvas.height) / 1);
+        var widthMultiplier = aspectRatio > 1 ? aspectRatio : 1;
+        var heightMultiplier = aspectRatio < 1 ? aspectRatio : 1;
+
+        //Create a buffer for the data to be stored in.
+        var buffer: WebGLBuffer = Main.ThrowIfNullOrUndefined(this.canvasWebGL.createBuffer());
+        var vertices: number[] = [];
+        //2 because we are drawing a 2D shape.
+        var vertexCount: number = 2;
+
+        for (let i = 0; i <= 360; i++)
+        {
+            var j = i * Math.PI / 180;
+            var vert1: [number, number] = [
+                ((Math.sin(j) / widthMultiplier) * scale) + x, //X
+                ((Math.cos(j) * heightMultiplier) * scale) + y //Y
+            ];
+            var vert2: [number, number] =
+            [
+                x,
+                y
+            ];
+            //Will this not overwrite what is already in the 'vertices' variable?
+            vertices = vertices.concat(vert1);
+            vertices = vertices.concat(vert2);
+        }
+
+        this.canvasWebGL.bindBuffer(this.canvasWebGL.ARRAY_BUFFER, buffer);
+        this.canvasWebGL.bufferData(this.canvasWebGL.ARRAY_BUFFER, new Float32Array(vertices), this.canvasWebGL.STATIC_DRAW);
+
+        //Write the 'vbuffer' to the 'aVertexPosition' variable.
+        this.canvasWebGL.vertexAttribPointer(this.aVertexPosition, vertexCount, this.canvasWebGL.FLOAT, false, 0, 0);
+
+        //Set the colour.
+        //Set the 'uColor' variable value with 'uniform4fv' as the variable type is 'vec4'.
+        this.canvasWebGL.uniform4fv(this.uColour, _joint.TrackingState === TrackingState.Inferred ? [1.0, 1.0, 0.0, 1.0] : [0.0, 1.0, 0.0, 1.0]);
+
+        var triangleCount: number = vertices.length / vertexCount;
+        //I'm assuming that the way this works is the renderer completes the triangle from where the previous strip was placed.
+        this.canvasWebGL.drawArrays(this.canvasWebGL.TRIANGLE_STRIP, 0, triangleCount);
+    }
+
+    private OnMessage(_ev: object): void
+    {
+        if ((<IFrameSourceTypeDescriptor>(<KeyValuePair>FrameSourceTypes)[this.source]).type == "Point")
+        {
+            var bodies: Joints[] = _ev as Joints[];
+            this.canvas2D.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            bodies.forEach(body =>
+            {
+                Object.keys(body).forEach(jointKey => { this.MarkJointWebGL((<any>body)[jointKey] as Joint); });
+            });
+        }
     }
     //#endregion
 }
 new ViewSource().Init();
+
+type KeyValuePair = {[key: string]: any}
