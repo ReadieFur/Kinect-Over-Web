@@ -1,13 +1,5 @@
 {
-	"scripts": {
-		"Debug": "tsc && node ./build.jsx --Debug",
-		"Release": "tsc && node ./build.jsx --Release",
-		"publish": "tsc && node ./build.jsx --Publish",
-		"build": "tsc && node ./build.jsx --Build"
-	},
 	"dependencies": {
-		"directory-tree": "^2.2.7",
-		"log-timestamp": "^0.3.0",
-		"typescript": "^4.2.3"
+		"@types/jquery": "^3.5.5"
 	}
 }
