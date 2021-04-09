@@ -1,0 +1,21 @@
+body
+{
+    background-color: transparent;
+
+    > .slideMenu
+    {
+        z-index: 50;
+        width: 100%;
+        position: fixed;
+        height: 100px;
+        cursor: pointer;
+    }
+
+    > #canvas
+    {
+        position: absolute;
+        transform: translate(-50%, -50%);
+        top: 50%;
+        left: 50%;
+    }
+}
