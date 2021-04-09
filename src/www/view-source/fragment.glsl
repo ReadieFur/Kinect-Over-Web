@@ -1,5 +1,5 @@
 //The fragment shader handles each individual pixel in the image.
-//These first three lines are boilerplate coide, they must be there.
+//These first three lines are boilerplate code, they must be there.
 #ifdef GL_ES
     precision highp float;
 #endif
