@@ -24,13 +24,14 @@ namespace KinectOverWeb.NDI
             streams.TryGetValue(_name, out NDIStream stream);
             if (stream == null) { return false; }
             stream.Dispose();
+            streams.Remove(_name);
             return true;
         }
 
-        public void GetStream(string _name, out NDIStream _stream)
+        public NDIStream GetStream(string _name)
         {
             streams.TryGetValue(_name, out NDIStream stream);
-            _stream = stream;
+            return stream;
         }
     }
 }

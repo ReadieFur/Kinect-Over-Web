@@ -10,5 +10,11 @@ namespace KinectOverWeb
         {
             app = new Startup();
         }
+
+        protected override void OnExit(ExitEventArgs e)
+        {
+            app.Dispose();
+            base.OnExit(e);
+        }
     }
 }

@@ -51,6 +51,7 @@ namespace KinectOverWeb.NDI
         public void StopStream()
         {
             streamEnabled = false;
+            streamTask.Dispose();
         }
 
         private void Stream()
