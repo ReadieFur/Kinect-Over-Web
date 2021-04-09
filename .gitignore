@@ -363,10 +363,12 @@ MigrationBackup/
 FodyWeavers.xsd
 
 # Custom
-src/libs/*.dll
 src/www/pnpm-lock.yaml
 src/www/dist/
 src/www/build/
 src/www/**/*.js
 src/www/**/*.css
 src/www/**/*.map
+src/app/libs/*.dll
+src/**/*.ico
+src/**/*.ttf
