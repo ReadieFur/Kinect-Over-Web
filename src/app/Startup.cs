@@ -154,6 +154,7 @@ namespace KinectOverWeb
                 MainWindow.SourcesItem sourcesItem = mainWindow.AddToSources(name.Replace('_', ' '), name, key);
                 sourcesItem.checkBox.Checked += (se, re) =>
                 {
+                    mainWindow.peformanceNotice.Visibility = System.Windows.Visibility.Visible;
                     websocketManager.AddEndpoint($"/kinect-over-web/{name}");
                     kinectManager.frameSources.AddSource(key);
                     mainWindow.activeSourcePreview = key;
@@ -166,6 +167,7 @@ namespace KinectOverWeb
                     {
                         mainWindow.activeSourcePreview = FrameSources.SourceTypes.None;
                         mainWindow.previewCanvas.Children.Clear();
+                        mainWindow.peformanceNotice.Visibility = System.Windows.Visibility.Hidden;
                     }
                 };
             }

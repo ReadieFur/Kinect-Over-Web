@@ -124,8 +124,8 @@ namespace KinectOverWeb.Kinect
 
             double circleSize =
                 (_basicJoint.TrackingState == TrackingState.Inferred ? 10 : 20) * //Default values -> 15 : 30
-                (1 / (_basicJoint.Position.Z < 0 ? 0 : _basicJoint.Position.Z)); /*
-                (_canvas.ActualWidth / _canvas.ActualHeight >= 1 ? _canvas.ActualWidth : _canvas.ActualHeight);*/ //With the default values this is way too small to be seen. I Will come back to fixing this when I write the web client.
+                (1 / (_basicJoint.Position.Z < 0 ? 0 : _basicJoint.Position.Z)) /*
+                (_canvas.ActualWidth / _canvas.ActualHeight >= 1 ? _canvas.ActualWidth : _canvas.ActualHeight)*/; //With the default values this is way too small to be seen. I Will come back to fixing this when I write the web client.
 
             double x = (_basicJoint.Position.X * _canvas.ActualWidth / width) - (circleSize / 2);
             double y = (_basicJoint.Position.Y * _canvas.ActualHeight / height) - (circleSize / 2);
@@ -136,8 +136,6 @@ namespace KinectOverWeb.Kinect
                 Width = circleSize,
                 Height = circleSize,
                 Fill = brush,
-                //Stroke = brush,
-                //StrokeThickness = 8
             };
 
             _canvas.Children.Add(circle);
@@ -179,8 +177,8 @@ namespace KinectOverWeb.Kinect
 
             double strokeThickness =
                 (_basicJoint1.TrackingState == TrackingState.Inferred || _basicJoint2.TrackingState == TrackingState.Inferred ? 4 : 8) * //Default values -> 4 : 8
-                (((1 / (_basicJoint1.Position.Z < 0 ? 0 : _basicJoint1.Position.Z)) + (1 / (_basicJoint2.Position.Z < 0 ? 0 : _basicJoint2.Position.Z))) / 2); /*
-                (_canvas.ActualWidth / _canvas.ActualHeight >= 1 ? _canvas.ActualWidth : _canvas.ActualHeight);*/ //With the default values this is way too small to be seen. I Will come back to fixing this when I write the web client.
+                (((1 / (_basicJoint1.Position.Z < 0 ? 0 : _basicJoint1.Position.Z)) + (1 / (_basicJoint2.Position.Z < 0 ? 0 : _basicJoint2.Position.Z))) / 2) /*
+                (_canvas.ActualWidth / _canvas.ActualHeight >= 1 ? _canvas.ActualWidth : _canvas.ActualHeight)*/; //With the default values this is way too small to be seen. I Will come back to fixing this when I write the web client.
 
             double x1 = _basicJoint1.Position.X * _canvas.ActualWidth / width;
             double y1 = _basicJoint1.Position.Y * _canvas.ActualHeight / height;

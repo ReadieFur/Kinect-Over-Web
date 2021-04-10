@@ -32,6 +32,7 @@
             </Grid>
             <!--I couldnt seem to figure out why the source wasnt displaying-->
             <!--<WebBrowser x:Name="browser" Grid.Row="1" Grid.Column="1" Source="http://127.0.0.1:5502/?source=Body_Points_Mapped_To_Colour"/>-->
+            <Label x:Name="peformanceNotice" Content="MINIMISE THE APP FOR BETTER PERFORMANCE" Visibility="Hidden" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Normal" FontSize="16"/>
             <Canvas x:Name="previewCanvas" Grid.Row="1" Grid.Column="1"/>
             <ListBox x:Name="sources" Grid.Row="1">
                 <!--<ListViewItem Height="50">

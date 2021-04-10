@@ -33,6 +33,7 @@
 <header id="header"><?php echo execAndRead("{$SITE_ROOT}/assets/php/header.php"); ?></header>
 <body>
     <span class="slideMenu"></span>
+    <h3 id="messageElement">Loading...</h3>
     <canvas id="canvas"></canvas>
 </body>
 <footer id="footer"></footer>
