@@ -116,6 +116,7 @@ class ViewSource
     {
         if ((<IFrameSourceTypeDescriptor>(<KeyValuePair>FrameSourceTypes)[this.source]).type == "Point")
         {
+            //Add user customisation for point data. E.g. change the colours of all people or individual people e.t.c.
             var bodies: Joints[] = _ev as Joints[];
             this.canvas2D.clearRect(0, 0, this.canvas.width, this.canvas.height);
             bodies.forEach(body =>

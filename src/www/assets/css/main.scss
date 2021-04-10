@@ -1,5 +1,4 @@
 //Some variables get changed at runtime so I will not be using SCSS variables for some things.
-
 @media screen and (max-width: 1280px)
 {
     body
@@ -26,11 +25,8 @@ body
     background: rgba(var(--backgroundColour), 1); //For other properties, should I be using 'background' and not 'background-color'?
     margin: 0;
     overflow-x: hidden;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    position: fixed;
+    min-height: 100vh;
+    position: relative;
 }
 
 //#region Containers
