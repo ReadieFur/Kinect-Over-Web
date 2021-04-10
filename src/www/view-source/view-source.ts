@@ -29,11 +29,15 @@ interface IFrameSourceTypeDescriptor
 
 class ViewSource
 {
+    private messageElement!: HTMLHeadingElement;
     private canvas!: HTMLCanvasElement;
     private canvas2D!: CanvasRenderingContext2D;
-    private canvasWebGL!: WebGLRenderingContext;
+    /*private canvasWebGL!: WebGLRenderingContext;
     private uColour!: WebGLUniformLocation;
     private aVertexPosition!: number;
+    private aspectRatio!: number;
+    private widthMultiplier!: number;
+    private heightMultiplier!: number;*/
     private source!: string;
     private websocketClient!: WebsocketClient;
     private endpoint!: IWebsocketEndpoint;
@@ -43,6 +47,8 @@ class ViewSource
     {
         new Main();
         new HeaderSlide();
+
+        this.messageElement = Main.ThrowIfNullOrUndefined(document.querySelector("#messageElement"));
 
         var path: string[] = window.location.pathname.split('/');
         if (path.length < 3) { Main.NavigateHome(true); }
@@ -71,31 +77,42 @@ class ViewSource
         this.canvas.style.height = `${height}px`;
         this.canvas.width = (<IFrameSourceTypeDescriptor>(<KeyValuePair>FrameSourceTypes)[this.source]).width;
         this.canvas.height = (<IFrameSourceTypeDescriptor>(<KeyValuePair>FrameSourceTypes)[this.source]).height;
-        //I could test for multiple contexts.
-        /*var _canvas2D: CanvasRenderingContext2D | null = this.canvas.getContext("2d");
+        var _canvas2D: CanvasRenderingContext2D | null = this.canvas.getContext("2d");
         if (_canvas2D === null) { return; }
-        this.canvas2D = _canvas2D;*/
-        var _canvasWebGL: WebGLRenderingContext | null = this.canvas.getContext("webgl");
+        this.canvas2D = _canvas2D;
+        /*var _canvasWebGL: WebGLRenderingContext | null = this.canvas.getContext("webgl");
         if (_canvasWebGL === null) { Main.NavigateHome(true); }
         this.canvasWebGL = _canvasWebGL!;
-        await this.InitCanvasWebGL();
+        await this.InitCanvasWebGL();*/
 
         setInterval(() => { console.clear(); }, 600000); //Try to clear some memory every 10 mins (mainly for clearing disconnected client errors)
 
         this.websocketClient = new WebsocketClient(1311, Main.urlParams.get("ip"));
         this.endpoint = this.websocketClient.AddEndpoint(`/kinect-over-web/${this.source}`);
+        this.endpoint.AddEventListener("open", (ev) => { this.OnOpen(ev); })
         this.endpoint.AddEventListener("message", (ev) => { this.OnMessage(ev); });
         this.endpoint.AddEventListener("close", (ev) => { this.OnClose(ev); })
+        this.messageElement.innerText = "Connecting...";
         this.endpoint.Connect();
+
+        //var message = JSON.parse(`[{"SpineBase":{"Position":{"X":1709.6333,"Y":1041.46326,"Z":0.643749058},"TrackingState":2},"SpineMid":{"Position":{"X":1703.0863,"Y":628.5443,"Z":0.69394964},"TrackingState":2},"Neck":{"Position":{"X":1699.73755,"Y":296.897339,"Z":0.7272453},"TrackingState":2},"Head":{"Position":{"X":1662.62671,"Y":90.42227,"Z":0.743000746},"TrackingState":2},"ShoulderLeft":{"Position":{"X":1815.16968,"Y":235.420654,"Z":0.6820441},"TrackingState":1},"ElbowLeft":{"Position":{"X":1520.90112,"Y":450.972168,"Z":0.725537539},"TrackingState":1},"WristLeft":{"Position":{"X":1770.03528,"Y":672.4723,"Z":0.5716434},"TrackingState":2},"HandLeft":{"Position":{"X":1745.5033,"Y":717.9655,"Z":0.549292564},"TrackingState":2},"ShoulderRight":{"Position":{"X":1750.49292,"Y":486.0276,"Z":0.6698719},"TrackingState":1},"ElbowRight":{"Position":{"X":1727.0907,"Y":761.706238,"Z":0.550148},"TrackingState":2},"WristRight":{"Position":{"X":1717.19458,"Y":425.2526,"Z":0.7015094},"TrackingState":2},"HandRight":{"Position":{"X":1722.93542,"Y":352.3387,"Z":0.698337734},"TrackingState":1},"HipLeft":{"Position":{"X":1712.91675,"Y":974.9962,"Z":0.6245679},"TrackingState":2},"KneeLeft":{"Position":{"X":1489.948,"Y":747.3233,"Z":0.8766317},"TrackingState":1},"AnkleLeft":{"Position":{"X":1305.44824,"Y":366.765839,"Z":0.821504354},"TrackingState":1},"FootLeft":{"Position":{"X":1470.524,"Y":430.574951,"Z":0.693843067},"TrackingState":1},"HipRight":{"Position":{"X":1710.08923,"Y":1111.07471,"Z":0.6100365},"TrackingState":2},"KneeRight":{"Position":{"X":"-Infinity","Y":"-Infinity","Z":0.549630165},"TrackingState":1},"AnkleRight":{"Position":{"X":"-Infinity","Y":"-Infinity","Z":0.515213},"TrackingState":1},"FootRight":{"Position":{"X":"-Infinity","Y":"-Infinity","Z":0.5413592},"TrackingState":1},"SpineShoulder":{"Position":{"X":1700.26587,"Y":373.6996,"Z":0.721021235},"TrackingState":2},"HandTipLeft":{"Position":{"X":1773.75793,"Y":871.6687,"Z":0.5137372},"TrackingState":2},"ThumbLeft":{"Position":{"X":1795.93616,"Y":718.137939,"Z":0.516750038},"TrackingState":2},"HandTipRight":{"Position":{"X":1700.73035,"Y":341.144348,"Z":0.7350642},"TrackingState":2},"ThumbRight":{"Position":{"X":1754.71375,"Y":323.023224,"Z":0.6552121},"TrackingState":2}}]`);
+        //this.OnMessage(message);
     }
 
-    private OnClose(ev: Event)
+    private OnOpen(_ev: any)
     {
-        console.log(ev);
+        this.messageElement.style.display = "none";
     }
 
     //#region Canvas2D
-    /*private OnMessage(_ev: object): void
+    private OnClose(_ev: any)
+    {
+        this.canvas2D.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.messageElement.style.display = "block";
+        this.messageElement.innerText = "Client not connected";
+    }
+
+    private OnMessage(_ev: object): void
     {
         if ((<IFrameSourceTypeDescriptor>(<KeyValuePair>FrameSourceTypes)[this.source]).type == "Point")
         {
@@ -147,7 +164,6 @@ class ViewSource
         )
         { return; }
 
-
         this.canvas2D.beginPath();
         this.canvas2D.strokeStyle = _joint1.TrackingState == TrackingState.Inferred || _joint2.TrackingState == TrackingState.Inferred ? "#FFFF00" : "#00FF00";
         this.canvas2D.lineWidth = (_joint1.TrackingState == TrackingState.Inferred || _joint2.TrackingState == TrackingState.Inferred ? 4 : 8) *
@@ -174,7 +190,7 @@ class ViewSource
         this.canvas2D.arc(
             _joint.Position.X,
             _joint.Position.Y,
-            (_joint.TrackingState == TrackingState.Inferred ? 15 : 30) * (1 / (_joint.Position.Z < 0 ? 0 : _joint.Position.Z)),
+            (_joint.TrackingState == TrackingState.Inferred ? 10 : 20) * (1 / (_joint.Position.Z < 0 ? 0 : _joint.Position.Z)),
             0,
             2 * Math.PI,
             false
@@ -183,7 +199,7 @@ class ViewSource
         this.canvas2D.fill();
         this.canvas2D.stroke();
         this.canvas2D.closePath();
-    }*/
+    }
     //#endregion
 
     //#region CanvasWebGL
@@ -192,7 +208,16 @@ class ViewSource
     //I had tested most of this in another folder which I made these comments in,
     //but I don't want to upload that as its own GitHub repo so for my first public WebGL set of code I will be leaving my comments in here (some comments have been stripped).
     //The tutorial I followed for this basic WebGL setup can be found here: https://www.creativebloq.com/javascript/get-started-webgl-draw-square-7112981
-    private async InitCanvasWebGL()
+
+    //UPDATE/CONCLUSION: So I got this working, there were a few visual bugs that I didnt like, I will probably come back to that.
+    //But anyway, which runs better, the WebGL context or 2D context? From my testing and with my code, 2D, the WebGL one RUNS LIKE ASS in comparison.
+    //I wont be using WebGL for now until I optimise my code.
+    //It's a little annoying that it didn't work as well as I had hoped considering the amount of time I spend looking into WebGL,
+    //but at least I learnt some things about it and it could be handy in the future.
+    //I may come back to this WebGL stuff and try and make it better but for now I will be using the 2D context.
+    //I will be leaving this WebGL stuff in here but commented out, this project is very experimental anyway. The C# stuff is also quite messy, the NDI stuff I made also isn't used.
+
+    /*private async InitCanvasWebGL()
     {
         var vertexShaderSource: string = await jQuery.ajax(
         {
@@ -258,56 +283,61 @@ class ViewSource
         //Coordinate 0,0 is the center of the canvas.
         //Coordinate 1,1 is the bottom right of the canvas.
         //In WebGL there are three main drawing types: points, lines and triangles.
+
+        this.aspectRatio = this.canvas.width / this.canvas.height;
+        this.widthMultiplier = this.aspectRatio > 1 ? this.aspectRatio : 1;
+        this.heightMultiplier = this.aspectRatio < 1 ? this.aspectRatio : 1;
     }
 
-    private JoinJointsWebGL(_joint1: Joint, _joint2: Joint): void
-    {
-        
-    }
-
+    //I could probably cut down on some of these calculations and save a bit of peformance if I did some of the calculations in the calling function so they are not repeated.
     //WebGL circle using triangles: https://github.com/davidwparker/programmingtil-webgl/tree/master/0027-drawing-a-circle
     private MarkJointWebGL(_joint: Joint): void
     {
-        if (
+        if
+        (
             _joint.TrackingState == TrackingState.NotTracked ||
-            typeof(_joint.Position.X) !== "string" ||
-            typeof(_joint.Position.Y) !== "string" ||
-            typeof(_joint.Position.Z) !== "string"
+            typeof(_joint.Position.X) !== "number" ||
+            typeof(_joint.Position.Y) !== "number" ||
+            typeof(_joint.Position.Z) !== "number" ||
+            isNaN(_joint.Position.X) ||
+            isNaN(_joint.Position.Y) ||
+            isNaN(_joint.Position.Z)
         )
         { return; }
 
-        var x = parseInt(_joint.Position.X);
-        var y = parseInt(_joint.Position.Y);
-        if (isNaN(x) || isNaN(y)) { return; }
+        var scale = (_joint.TrackingState == TrackingState.Inferred ? 0.015 : 0.03) *
+            (1 / (_joint.Position.Z < 0 ? 0 : _joint.Position.Z)); /
+            ((this.aspectRatio >= 1 ? this.canvas.width : this.canvas.height) / 1); //With the default values when scaled the circle is way too small to be seen, I will come back to this device scaling.
 
-        var aspectRatio = this.canvas.width / this.canvas.height;
-        var scale = 30 / ((aspectRatio >= 1 ? this.canvas.width : this.canvas.height) / 1);
-        var widthMultiplier = aspectRatio > 1 ? aspectRatio : 1;
-        var heightMultiplier = aspectRatio < 1 ? aspectRatio : 1;
-
-        //Create a buffer for the data to be stored in.
-        var buffer: WebGLBuffer = Main.ThrowIfNullOrUndefined(this.canvasWebGL.createBuffer());
         var vertices: number[] = [];
-        //2 because we are drawing a 2D shape.
+        //2 because we are drawing a 2D shape (2 points).
+        //Is this 2 sets of two per shape?
         var vertexCount: number = 2;
+
+        var x: number = ((_joint.Position.X * (1 - -1)) / this.canvas.width) + -1;
+        var y: number = -(((_joint.Position.Y * (1 - -1)) / this.canvas.height) + -1);
 
         for (let i = 0; i <= 360; i++)
         {
             var j = i * Math.PI / 180;
-            var vert1: [number, number] = [
-                ((Math.sin(j) / widthMultiplier) * scale) + x, //X
-                ((Math.cos(j) * heightMultiplier) * scale) + y //Y
+
+            var outerCoordinate: [number, number] =
+            [
+                ((Math.sin(j) / this.widthMultiplier) * scale) + x, //X
+                ((Math.cos(j) * this.heightMultiplier) * scale) + y //Y
             ];
-            var vert2: [number, number] =
+            var innerCoordinate: [number, number] =
             [
                 x,
                 y
             ];
-            //Will this not overwrite what is already in the 'vertices' variable?
-            vertices = vertices.concat(vert1);
-            vertices = vertices.concat(vert2);
+
+            vertices = vertices.concat(outerCoordinate);
+            vertices = vertices.concat(innerCoordinate);
         }
 
+        //Create a buffer for the data to be stored in.
+        var buffer: WebGLBuffer = Main.ThrowIfNullOrUndefined(this.canvasWebGL.createBuffer());
         this.canvasWebGL.bindBuffer(this.canvasWebGL.ARRAY_BUFFER, buffer);
         this.canvasWebGL.bufferData(this.canvasWebGL.ARRAY_BUFFER, new Float32Array(vertices), this.canvasWebGL.STATIC_DRAW);
 
@@ -318,9 +348,78 @@ class ViewSource
         //Set the 'uColor' variable value with 'uniform4fv' as the variable type is 'vec4'.
         this.canvasWebGL.uniform4fv(this.uColour, _joint.TrackingState === TrackingState.Inferred ? [1.0, 1.0, 0.0, 1.0] : [0.0, 1.0, 0.0, 1.0]);
 
-        var triangleCount: number = vertices.length / vertexCount;
         //I'm assuming that the way this works is the renderer completes the triangle from where the previous strip was placed.
-        this.canvasWebGL.drawArrays(this.canvasWebGL.TRIANGLE_STRIP, 0, triangleCount);
+        //The last parameter is the number of triangles in the array.
+        this.canvasWebGL.drawArrays(this.canvasWebGL.TRIANGLE_STRIP, 0, vertices.length / vertexCount);
+    }
+
+    private JoinJointsWebGL(_joint1: Joint, _joint2: Joint): void
+    {
+        if
+        (
+            _joint1.TrackingState == TrackingState.NotTracked ||
+            _joint2.TrackingState == TrackingState.NotTracked ||
+            typeof(_joint1.Position.X) !== "number" ||
+            typeof(_joint1.Position.Y) !== "number" ||
+            typeof(_joint1.Position.Z) !== "number" ||
+            typeof(_joint2.Position.X) !== "number" ||
+            typeof(_joint2.Position.Y) !== "number" ||
+            typeof(_joint2.Position.Z) !== "number" ||
+            isNaN(_joint1.Position.X) ||
+            isNaN(_joint1.Position.Y) ||
+            isNaN(_joint1.Position.Z) ||
+            isNaN(_joint2.Position.X) ||
+            isNaN(_joint2.Position.Y) ||
+            isNaN(_joint2.Position.Z)
+        )
+        { return; }
+
+        var width = (_joint1.TrackingState == TrackingState.Inferred || _joint2.TrackingState == TrackingState.Inferred ? 0.004 : 0.008) *
+        (((1 / (_joint1.Position.Z < 0 ? 0 : _joint1.Position.Z)) + (1 / (_joint2.Position.Z < 0 ? 0 : _joint2.Position.Z))) / 2); /
+            ((this.aspectRatio >= 1 ? this.canvas.width : this.canvas.height) / 1);
+
+        var x1: number = ((_joint1.Position.X * (1 - -1)) / this.canvas.width) + -1;
+        var y1: number = -(((_joint1.Position.Y * (1 - -1)) / this.canvas.height) + -1);
+        var x2: number = ((_joint2.Position.X * (1 - -1)) / this.canvas.width) + -1;
+        var y2: number = -(((_joint2.Position.Y * (1 - -1)) / this.canvas.height) + -1);
+
+        var vertexCount: number = 2;
+        var rectangle:
+        [
+            //Triangle 1:
+            number, number,
+            number, number,
+            number, number,
+            //Triangle 2:
+            number, number,
+            number, number,
+            number, number
+        ] =
+        [
+            //Triangle 1:
+            //Bottom
+            x1 + width, y1 + width,
+            //Middle
+            x2 + width, y2 + width,
+            //Top
+            x2 - width, y2 - width,
+            //Triangle 2:
+            //Bottom
+            x1 + width, y1 + width,
+            //Middle
+            x1 - width, y1 - width,
+            //Top
+            x2 - width, y2 - width
+        ];
+
+        var buffer: WebGLBuffer = Main.ThrowIfNullOrUndefined(this.canvasWebGL.createBuffer());
+        this.canvasWebGL.bindBuffer(this.canvasWebGL.ARRAY_BUFFER, buffer);
+        this.canvasWebGL.bufferData(this.canvasWebGL.ARRAY_BUFFER, new Float32Array(rectangle), this.canvasWebGL.STATIC_DRAW);
+        this.canvasWebGL.vertexAttribPointer(this.aVertexPosition, vertexCount, this.canvasWebGL.FLOAT, false, 0, 0);
+
+        this.canvasWebGL.uniform4fv(this.uColour, _joint1.TrackingState === TrackingState.Inferred || _joint2.TrackingState === TrackingState.Inferred ? [1.0, 1.0, 0.0, 1.0] : [0.0, 1.0, 0.0, 1.0]);
+
+        this.canvasWebGL.drawArrays(this.canvasWebGL.TRIANGLES, 0, rectangle.length / vertexCount);
     }
 
     private OnMessage(_ev: object): void
@@ -328,13 +427,41 @@ class ViewSource
         if ((<IFrameSourceTypeDescriptor>(<KeyValuePair>FrameSourceTypes)[this.source]).type == "Point")
         {
             var bodies: Joints[] = _ev as Joints[];
-            this.canvas2D.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            //Set the canvas colour buffer, RGBA(0-1).
+            this.canvasWebGL.clearColor(0.0, 0.0, 0.0, 0.0);
+            //Set the canvas background to the buffered colour.
+            this.canvasWebGL.clear(this.canvasWebGL.COLOR_BUFFER_BIT);
             bodies.forEach(body =>
             {
+                this.JoinJointsWebGL(body.Head, body.Neck);
+                this.JoinJointsWebGL(body.Neck, body.SpineShoulder);
+                this.JoinJointsWebGL(body.SpineShoulder, body.ShoulderLeft);
+                this.JoinJointsWebGL(body.SpineShoulder, body.ShoulderRight);
+                this.JoinJointsWebGL(body.SpineShoulder, body.SpineMid);
+                this.JoinJointsWebGL(body.ShoulderLeft, body.ElbowLeft);
+                this.JoinJointsWebGL(body.ShoulderRight, body.ElbowRight);
+                this.JoinJointsWebGL(body.ElbowLeft, body.WristLeft);
+                this.JoinJointsWebGL(body.ElbowRight, body.WristRight);
+                this.JoinJointsWebGL(body.WristLeft, body.HandLeft);
+                this.JoinJointsWebGL(body.WristRight, body.HandRight);
+                this.JoinJointsWebGL(body.HandLeft, body.HandTipLeft);
+                this.JoinJointsWebGL(body.HandRight, body.HandTipRight);
+                this.JoinJointsWebGL(body.WristLeft, body.ThumbLeft);
+                this.JoinJointsWebGL(body.WristRight, body.ThumbRight);
+                this.JoinJointsWebGL(body.SpineMid, body.SpineBase);
+                this.JoinJointsWebGL(body.SpineBase, body.HipLeft);
+                this.JoinJointsWebGL(body.SpineBase, body.HipRight);
+                this.JoinJointsWebGL(body.HipLeft, body.KneeLeft);
+                this.JoinJointsWebGL(body.HipRight, body.KneeRight);
+                this.JoinJointsWebGL(body.KneeLeft, body.AnkleLeft);
+                this.JoinJointsWebGL(body.KneeRight, body.AnkleRight);
+                this.JoinJointsWebGL(body.AnkleLeft, body.FootLeft);
+                this.JoinJointsWebGL(body.AnkleRight, body.FootRight);
+
                 Object.keys(body).forEach(jointKey => { this.MarkJointWebGL((<any>body)[jointKey] as Joint); });
             });
         }
-    }
+    }*/
     //#endregion
 }
 new ViewSource().Init();
