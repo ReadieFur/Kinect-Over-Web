@@ -17,11 +17,6 @@
     );
 
     $path = str_replace($WEB_ROOT . '/view-source', '', $REQUEST_URI);
-    if (!in_array($path, $sources))
-    {
-        http_response_code(404);
-        die();
-    }
 ?>
 <!DOCTYPE html>
 <html lang="en">

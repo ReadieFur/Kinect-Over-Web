@@ -55,7 +55,7 @@ export class Main
             if (element.href == window.location.href)
             {
                 element.classList.add("accentText");
-                let whyIsThisSoFarBack = element.parentElement?.parentElement?.parentElement;
+                let whyIsThisSoFarBack = element.parentElement!.parentElement!.parentElement;
                 if (whyIsThisSoFarBack !== null || whyIsThisSoFarBack !== undefined)
                 {
                     if (whyIsThisSoFarBack!.classList.contains("naviDropdown")) { whyIsThisSoFarBack!.firstElementChild!.classList.add("accentText"); }

@@ -1,5 +1,5 @@
-import { Main } from "../assets/js/main";
-import { HeaderSlide } from "../assets/js/headerSlide";
+import { Main } from "../assets/js/main.js";
+import { HeaderSlide } from "../assets/js/headerSlide.js";
 import { WebsocketClient, IWebsocketEndpoint, Joints, Joint, Position, TrackingState } from './websocketClient.js';
 
 class FrameSourceTypes
