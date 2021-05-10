@@ -10,7 +10,7 @@ You should see something like this:
 The app by itself may not be all that useful to the average user so I have created an [overlay webapp](https://readie.global-gaming.co/kinect-over-web/).  
 This webapp will allow you to use the outputted data as an overlay for whatever you want.  
 Body tracking data example:  
-<img src="./previews/overlay.gif" width="480">  
+<img src="./previews/web.gif" width="480">  
 
 In my case I use it as a skeleton overlay for my camera in OBS.  
 <img src="./previews/overlay.gif" width="480">
