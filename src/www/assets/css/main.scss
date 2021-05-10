@@ -295,4 +295,24 @@ hr
     height: 100px;*/
     cursor: pointer;
 }
+
+::-webkit-scrollbar
+{
+    width: 15px;
+}
+
+::-webkit-scrollbar-track
+{
+    background: rgba(var(--backgroundColour), 1);
+}
+   
+::-webkit-scrollbar-thumb
+{
+    background: rgba(var(--backgroundAltColour), 1);
+
+    &:hover
+    {
+        background: rgba(var(--foregroundColour), 1);
+    }
+}
 //#endregion

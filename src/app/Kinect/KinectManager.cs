@@ -28,7 +28,7 @@ namespace KinectOverWeb.Kinect
             reader = kinect.OpenMultiSourceFrameReader(FrameSourceTypes.Color | FrameSourceTypes.Body);
             reader.MultiSourceFrameArrived += Reader_MultiSourceFrameArrived;
 
-            faceSource = new FaceFrameSource(kinect, 0,
+            /*faceSource = new FaceFrameSource(kinect, 0,
                 FaceFrameFeatures.BoundingBoxInColorSpace |
                 FaceFrameFeatures.FaceEngagement |
                 FaceFrameFeatures.LookingAway |
@@ -42,7 +42,7 @@ namespace KinectOverWeb.Kinect
                 FaceFrameFeatures.RotationOrientation
             );
             faceReader = faceSource.OpenReader();
-            faceReader.FrameArrived += FaceReader_FrameArrived;
+            faceReader.FrameArrived += FaceReader_FrameArrived;*/
 
             kinect.Open();
         }
